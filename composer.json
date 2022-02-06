@@ -1,0 +1,15 @@
+{
+    "name": "benjamim/mvcframework",
+    "authors": [
+        {
+            "name": "benjamim",
+            "email": "bhaskdelta2@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "app\\": "./"
+        }
+    },
+    "require": {}
+}
