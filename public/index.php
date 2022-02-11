@@ -6,7 +6,7 @@ use app\core\Request;
 
 $app = new Application();
 
-$app->router->get('/', fn() => 'Hello World');
-$app->router->get('/contact', fn() => 'Contact');
+$app->router->get('/', 'home');
+$app->router->get('/contact', 'contact');
 
 $app->run();
