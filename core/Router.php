@@ -2,21 +2,31 @@
 
 namespace app\core;
 
-use JetBrains\PhpStorm\Pure;
-
 class Router
 {
     protected array $routes = [];
     public Request $request;
+    public Response $response;
 
-    public function __construct(Request $request)
+    /**
+     * @param Request $request
+     * @param Response $response
+     */
+    public function __construct(Request $request, Response $response)
     {
         $this->request = $request;
+        $this->response = $response;
     }
 
-    public function get(string $path, string $callback)
+    public function get(string $path, \Closure | string $callback)
     {
         $this->routes['get'][$path] = $callback;
+    }
+
+    public function post(string $path, \Closure $callback)
+    {
+
+        $this->routes['post'][$path] = $callback;
     }
 
     public function resolve()
@@ -26,17 +36,39 @@ class Router
         $callback = $this->routes[$method][$path] ?? false;
 
         if (!$callback) {
-            return 'Not Found';
+            $this->response->setStatusCode(404);
+            return $this->renderView('_404');
         }
         if (is_string($callback)) {
-            $this->renderView($callback);
-            exit();
+            return $this->renderView($callback);
         }
         return call_user_func($callback);
     }
 
-    private function renderView(string $view)
+    private function renderView($view)
     {
-        include_once __DIR__ . "/../views/$view.php";
+        $layoutContent = $this->layoutContent();
+        $viewContent = $this->renderOnlyView($view);
+        return str_replace("{{content}}", $viewContent, $layoutContent);
+    }
+
+    private function renderContent($viewContent): string
+    {
+        $layoutContent = $this->layoutContent();
+        return str_replace('{{content}}', $viewContent, $layoutContent);
+    }
+
+    protected function layoutContent()
+    {
+        ob_start();
+        include_once Application::$ROOT_DIR . '/views/layouts/main.php';
+        return ob_get_clean();
+    }
+
+    protected function renderOnlyView(string $view)
+    {
+        ob_start();
+        include_once Application::$ROOT_DIR . "/views/$view.php";
+        return ob_get_clean();
     }
 }
