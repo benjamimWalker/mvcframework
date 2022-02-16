@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\core\Application;
 use app\core\Controller;
+use app\core\Request;
 
 class SiteController extends Controller
 {
@@ -21,8 +22,8 @@ class SiteController extends Controller
         return $this->render('home', $params);
     }
 
-    public static function handleContact()
+    public static function handleContact(Request $request): array
     {
-        return 'Handling submitted data';
+        return $request->getBody();
     }
 }
