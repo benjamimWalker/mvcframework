@@ -32,7 +32,7 @@ class Router
     public function resolve()
     {
         $path = $this->request->getPaht();
-        $method = $this->request->getMethod();
+        $method = $this->request->method();
         $callback = $this->routes[$method][$path] ?? false;
 
         if (!$callback) {
